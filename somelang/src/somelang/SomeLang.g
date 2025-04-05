@@ -8,4 +8,9 @@ program returns [Program ast]
         (e=exp { $list.add($e.ast);})* { $ast = new Program($list); }
         ;
 
-exp returns [Exp ast]
+exp returns [Exp ast]:
+        | a=addexp { $ast = $a.ast; }
+        | s=subexp { $ast = $s.ast; }
+        | m=multexp { $ast = $m.ast; }
+        | d=divexp { $ast = $d.ast; }
+        ;
