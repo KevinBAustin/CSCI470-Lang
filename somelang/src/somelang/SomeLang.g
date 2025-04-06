@@ -9,8 +9,49 @@ program returns [Program ast]
         ;
 
 exp returns [Exp ast]:
+        n=numexp { $ast = $n.ast; }
         | a=addexp { $ast = $a.ast; }
         | s=subexp { $ast = $s.ast; }
         | m=multexp { $ast = $m.ast; }
         | d=divexp { $ast = $d.ast; }
         ;
+
+addexp returns [AddExp ast]:
+        locals [ArrayList<Exp> list]:
+	l=exp 'add' r=exp { 
+                        $list = new ArrayList<Exp>();
+			$list.add($l.ast);
+			$list.add($r.ast);
+			$ast = new AddExp($list);		 
+	                   }
+ 		;
+
+subexp returns [SubExp ast]:
+        locals [ArrayList<Exp> list]:
+	l=exp 'sub' r=exp { 
+                        $list = new ArrayList<Exp>();
+			$list.add($l.ast);
+			$list.add($r.ast);
+			$ast = new SubExp($list);		 
+	                   }
+ 		;
+
+multexp returns [MultExp ast]:
+        locals [ArrayList<Exp> list]:
+	l=exp 'mult' r=exp { 
+                        $list = new ArrayList<Exp>();
+			$list.add($l.ast);
+			$list.add($r.ast);
+			$ast = new MultExp($list);		 
+	                   }
+ 		;
+
+divexp returns [DivExp ast]:
+        locals [ArrayList<Exp> list]:
+	l=exp 'div' r=exp { 
+                        $list = new ArrayList<Exp>();
+			$list.add($l.ast);
+			$list.add($r.ast);
+			$ast = new DivExp($list);		 
+	                   }
+ 		;
