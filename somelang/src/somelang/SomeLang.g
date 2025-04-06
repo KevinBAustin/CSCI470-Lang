@@ -14,6 +14,11 @@ exp returns [Exp ast]:
         | s=subexp { $ast = $s.ast; }
         | m=multexp { $ast = $m.ast; }
         | d=divexp { $ast = $d.ast; }
+	| is=isexp { $ast = $is.ast; }
+	| comp=compexp { $ast = $comp.ast; }
+	| give=giveexp { $ast = $give.ast; }
+	| gain=gainexp { $ast = $gain.ast; }
+	| do=doexp { $ast = $do.ast; }
         ;
 
 addexp returns [AddExp ast]:
@@ -55,3 +60,4 @@ divexp returns [DivExp ast]:
 			$ast = new DivExp($list);		 
 	                   }
  		;
+
