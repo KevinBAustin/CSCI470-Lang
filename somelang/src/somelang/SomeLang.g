@@ -15,8 +15,8 @@ exp returns [Exp ast]:
 statement returns [Statement ast]:
 	is=isexp { $ast = $is.ast; }
 	|act=action { $ast = $act.ast; }
-	|num=numexp { $ast = $num.ast; }
-	|str=string { $ast = $str.ast; }
+	|num=Number { $ast = $num.ast; }
+	|str=String { $ast = $str.ast; }
 	;
 
 isexp returns [IsExp ast]:
@@ -28,7 +28,7 @@ action returns [Action ast]:
         | s=subexp { $ast = $s.ast; }
         | m=multexp { $ast = $m.ast; }
         | d=divexp { $ast = $d.ast; }
-	| comp=compexp { $ast = $comp.ast; }
+	| comp=compare { $ast = $comp.ast; }
 	| give=giveexp { $ast = $give.ast; }
 	| gain=gainexp { $ast = $gain.ast; }
 	| doe=doexp { $ast = $doe.ast; }
@@ -42,7 +42,7 @@ addexp returns [AddExp ast]:
 			$list.add($r.ast);
 			$ast = new AddExp($list);		 
 	                   }
- 		;
+	;
 
 subexp returns [SubExp ast]:
         locals [ArrayList<Exp> list]:
@@ -52,7 +52,7 @@ subexp returns [SubExp ast]:
 			$list.add($r.ast);
 			$ast = new SubExp($list);		 
 	                   }
- 		;
+ 	;
 
 multexp returns [MultExp ast]:
         locals [ArrayList<Exp> list]:
@@ -62,7 +62,7 @@ multexp returns [MultExp ast]:
 			$list.add($r.ast);
 			$ast = new MultExp($list);		 
 	                   }
- 		;
+ 	;
 
 divexp returns [DivExp ast]:
         locals [ArrayList<Exp> list]:
@@ -72,5 +72,35 @@ divexp returns [DivExp ast]:
 			$list.add($r.ast);
 			$ast = new DivExp($list);		 
 	                   }
- 		;
+ 	;
 
+compare returns [Compare ast]:
+	'compare' l=exp 'to' r=exp {
+	
+	}
+	;
+
+give returns [Give ast]:
+
+	;
+
+gain returns [Gain ast]:
+
+	;
+
+doexp returns [DoExp ast]:
+
+	;
+
+//lexer rules
+ID : [^0-9(),<-=.;$"][^(),<-=.;$"]*;
+
+Number : [0-9]+
+        | [0-9]+ '.' [0-9]+
+        ;
+
+String : '"'[^"]*'"';
+
+// skip rules
+WS  :  [ \t\r\n\u000C]+ -> skip;
+ Line_Comment :   '//' ~[\r\n]* -> skip;
