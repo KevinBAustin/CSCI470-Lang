@@ -8,18 +8,31 @@ program returns [Program ast]
         (e=exp { $list.add($e.ast);})* { $ast = new Program($list); }
         ;
 
-exp returns [Exp ast]:
-        n=numexp { $ast = $n.ast; }
-        | a=addexp { $ast = $a.ast; }
+exp returns [Exp ast]: 
+    	s=statement { $ast = $s.ast; }*
+	;
+
+statement returns [Statement ast]:
+	is=isexp { $ast = $is.ast; }
+	|act=action { $ast = $act.ast; }
+	|num=numexp { $ast = $num.ast; }
+	|str=string { $ast = $str.ast; }
+	;
+
+isexp returns [IsExp ast]:
+	l=ID 'is' r=exp { $ast = new IsExp($l.text, $r.ast); }
+ 	;
+
+action returns [Action ast]:
+	a=addexp { $ast = $a.ast; }
         | s=subexp { $ast = $s.ast; }
         | m=multexp { $ast = $m.ast; }
         | d=divexp { $ast = $d.ast; }
-	| is=isexp { $ast = $is.ast; }
 	| comp=compexp { $ast = $comp.ast; }
 	| give=giveexp { $ast = $give.ast; }
 	| gain=gainexp { $ast = $gain.ast; }
-	| do=doexp { $ast = $do.ast; }
-        ;
+	| doe=doexp { $ast = $doe.ast; }
+	;
 
 addexp returns [AddExp ast]:
         locals [ArrayList<Exp> list]:
