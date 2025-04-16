@@ -315,7 +315,6 @@ public interface AST {
 	  public T visit(AST.UnitExp e, Env env);
 	  public T visit(AST.NumExp e, Env env);
 	  public T visit(AST.StrExp e, Env env);
-	  public T visit(AST.BoolExp e, Env env);
 	  public T visit(AST.DivExp e, Env env);
 	  public T visit(AST.MultExp e, Env env);
 	  public T visit(AST.Program p, Env env);
