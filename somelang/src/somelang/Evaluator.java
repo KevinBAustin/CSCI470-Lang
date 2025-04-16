@@ -111,7 +111,7 @@ public class Evaluator implements AST.Visitor<Value> {
 		return new BoolVal(val instanceof Value.Null);
 	}
 
-	/*Comp Evaluations*/
+	/*Comp/Give/Gain Evaluations*/
 
 	/*The following is last*/
 	private Env initialEnv() {
