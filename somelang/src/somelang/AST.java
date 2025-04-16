@@ -224,6 +224,72 @@ public interface AST {
 			return visitor.visit(this, env);
 		}
 	}
+	
+	public static class CompExp extends CompoundArithExp {
+		public RemExp(Exp fst) {
+			super(fst);
+		}
+
+		public RemExp(List<Exp> args) {
+			super(args);
+		}
+
+		public RemExp(Exp fst, List<Exp> rest) {
+			super(fst, rest);
+		}
+
+		public RemExp(Exp left, Exp right) {
+			super(left, right);
+		}
+		
+		public <T> T accept(Visitor<T> visitor, Env env) {
+			return visitor.visit(this, env);
+		}
+	}
+
+	public static class GiveExp extends CompoundArithExp {
+		public RemExp(Exp fst) {
+			super(fst);
+		}
+
+		public RemExp(List<Exp> args) {
+			super(args);
+		}
+
+		public RemExp(Exp fst, List<Exp> rest) {
+			super(fst, rest);
+		}
+
+		public RemExp(Exp left, Exp right) {
+			super(left, right);
+		}
+		
+		public <T> T accept(Visitor<T> visitor, Env env) {
+			return visitor.visit(this, env);
+		}
+	}
+
+	public static class GainExp extends CompoundArithExp {
+		public RemExp(Exp fst) {
+			super(fst);
+		}
+
+		public RemExp(List<Exp> args) {
+			super(args);
+		}
+
+		public RemExp(Exp fst, List<Exp> rest) {
+			super(fst, rest);
+		}
+
+		public RemExp(Exp left, Exp right) {
+			super(left, right);
+		}
+		
+		public <T> T accept(Visitor<T> visitor, Env env) {
+			return visitor.visit(this, env);
+		}
+	}
 
   public interface Visitor <T> {
     public T visit(AST.AddExp e, Env env);
