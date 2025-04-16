@@ -291,17 +291,40 @@ public interface AST {
 		}
 	}
 
+	public static class IsExp extends Exp {
+		String _name;
+		Exp _value_exp; 
+		
+		public IsExp(String name, Exp value_exp) {
+			_name = name;
+			_value_exp = value_exp;
+		}
+		
+		public <T> T accept(Visitor<T> visitor, Env env) {
+			return visitor.visit(this, env);
+		}
+		
+		public String name() { return _name; }
+		
+		public Exp value_exp() { return _value_exp; }
+
+	}
+
   public interface Visitor <T> {
     public T visit(AST.AddExp e, Env env);
-	public T visit(AST.UnitExp e, Env env);
-	public T visit(AST.NumExp e, Env env);
-	public T visit(AST.StrExp e, Env env);
-	public T visit(AST.BoolExp e, Env env);
-	public T visit(AST.DivExp e, Env env);
-	public T visit(AST.MultExp e, Env env);
-	public T visit(AST.Program p, Env env);
-	public T visit(AST.SubExp e, Env env);
-	public T visit(AST.RemExp e, Env env);
-	public T visit(AST.NullExp e, Env env);
+	  public T visit(AST.UnitExp e, Env env);
+	  public T visit(AST.NumExp e, Env env);
+	  public T visit(AST.StrExp e, Env env);
+	  public T visit(AST.BoolExp e, Env env);
+	  public T visit(AST.DivExp e, Env env);
+	  public T visit(AST.MultExp e, Env env);
+	  public T visit(AST.Program p, Env env);
+	  public T visit(AST.SubExp e, Env env);
+	  public T visit(AST.RemExp e, Env env);
+	  public T visit(AST.CompExp e, Env env);
+	  public T visit(AST.GiveExp e, Env env);
+	  public T visit(AST.GainExp e, Env env);
+	  public T visit(AST.IsExp e, Env env);
+	  public T visit(AST.NullExp e, Env env);
   }
 }
