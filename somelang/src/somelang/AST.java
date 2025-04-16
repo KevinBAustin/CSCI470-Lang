@@ -29,6 +29,49 @@ public interface AST {
 
 	/*Insert other functionalities here*/
 
+	public static class NumExp extends Exp {
+		double _val;
+
+		public NumExp(double v) {
+			_val = v;
+		}
+
+		public double v() {
+			return _val;
+		}
+		
+		public <T> T accept(Visitor<T> visitor, Env env) {
+			return visitor.visit(this, env);
+		}
+	}
+
+	public static class StrExp extends Exp {
+		String _val;
+
+		public StrExp(String v) {
+			_val = v;
+		}
+
+		public String v() {
+			return _val;
+		}
+		
+		public <T> T accept(Visitor<T> visitor, Env env) {
+			return visitor.visit(this, env);
+		}
+	}
+
+	public static class NullExp extends Exp {
+		private Exp _arg; 
+		public NullExp(Exp arg){
+			_arg = arg;
+		}
+		public Exp arg() { return _arg; }
+		public <T> T accept(Visitor<T> visitor, Env env) {
+			return visitor.visit(this, env);
+		}
+	}
+
 	public static class AddExp extends CompoundArithExp {
 		public AddExp(Exp fst) {
 			super(fst);
@@ -118,7 +161,37 @@ public interface AST {
 		}
 	}
 
+	public static class RemExp extends CompoundArithExp {
+		public RemExp(Exp fst) {
+			super(fst);
+		}
+
+		public RemExp(List<Exp> args) {
+			super(args);
+		}
+
+		public RemExp(Exp fst, List<Exp> rest) {
+			super(fst, rest);
+		}
+
+		public RemExp(Exp left, Exp right) {
+			super(left, right);
+		}
+		
+		public <T> T accept(Visitor<T> visitor, Env env) {
+			return visitor.visit(this, env);
+		}
+	}
+
   public interface Visitor <T> {
-    public T visit(AST., Env env);
+    public T visit(AST.AddExp e, Env env);
+		public T visit(AST.UnitExp e, Env env);
+		public T visit(AST.NumExp e, Env env);
+		public T visit(AST.StrExp e, Env env);
+		public T visit(AST.BoolExp e, Env env);
+		public T visit(AST.DivExp e, Env env);
+		public T visit(AST.MultExp e, Env env);
+		public T visit(AST.Program p, Env env);
+		public T visit(AST.SubExp e, Env env);
   }
 }
