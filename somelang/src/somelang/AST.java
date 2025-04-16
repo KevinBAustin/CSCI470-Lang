@@ -225,20 +225,20 @@ public interface AST {
 		}
 	}
 	
-	public static class CompExp extends CompoundArithExp {
-		public RemExp(Exp fst) {
+	public static class Compare extends CompoundArithExp {
+		public Compare(Exp fst) {
 			super(fst);
 		}
 
-		public RemExp(List<Exp> args) {
+		public Compare(List<Exp> args) {
 			super(args);
 		}
 
-		public RemExp(Exp fst, List<Exp> rest) {
+		public Compare(Exp fst, List<Exp> rest) {
 			super(fst, rest);
 		}
 
-		public RemExp(Exp left, Exp right) {
+		public Compare(Exp left, Exp right) {
 			super(left, right);
 		}
 		
@@ -248,19 +248,19 @@ public interface AST {
 	}
 
 	public static class GiveExp extends CompoundArithExp {
-		public RemExp(Exp fst) {
+		public GiveExp(Exp fst) {
 			super(fst);
 		}
 
-		public RemExp(List<Exp> args) {
+		public GiveExp(List<Exp> args) {
 			super(args);
 		}
 
-		public RemExp(Exp fst, List<Exp> rest) {
+		public GiveExp(Exp fst, List<Exp> rest) {
 			super(fst, rest);
 		}
 
-		public RemExp(Exp left, Exp right) {
+		public GiveExp(Exp left, Exp right) {
 			super(left, right);
 		}
 		
@@ -270,19 +270,19 @@ public interface AST {
 	}
 
 	public static class GainExp extends CompoundArithExp {
-		public RemExp(Exp fst) {
+		public GainExp(Exp fst) {
 			super(fst);
 		}
 
-		public RemExp(List<Exp> args) {
+		public GainExp(List<Exp> args) {
 			super(args);
 		}
 
-		public RemExp(Exp fst, List<Exp> rest) {
+		public GainExp(Exp fst, List<Exp> rest) {
 			super(fst, rest);
 		}
 
-		public RemExp(Exp left, Exp right) {
+		public GainExp(Exp left, Exp right) {
 			super(left, right);
 		}
 		
@@ -321,7 +321,7 @@ public interface AST {
 	  public T visit(AST.Program p, Env env);
 	  public T visit(AST.SubExp e, Env env);
 	  public T visit(AST.RemExp e, Env env);
-	  public T visit(AST.CompExp e, Env env);
+	  public T visit(AST.Compare e, Env env);
 	  public T visit(AST.GiveExp e, Env env);
 	  public T visit(AST.GainExp e, Env env);
 	  public T visit(AST.IsExp e, Env env);
