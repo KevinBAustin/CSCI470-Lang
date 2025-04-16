@@ -310,6 +310,22 @@ public interface AST {
 
 	}
 
+	/**
+	 * Read expression: reads the file that is _file
+	 * @author hridesh
+	 *
+	 */
+	public static class ReadExp extends Exp {
+		private Exp _file; 
+		public ReadExp(Exp file){
+			_file = file;
+		}
+		public Exp file() { return _file; }
+		public <T> T accept(Visitor<T> visitor, Env env) {
+			return visitor.visit(this, env);
+		}
+	}
+
   public interface Visitor <T> {
     public T visit(AST.AddExp e, Env env);
 	  public T visit(AST.UnitExp e, Env env);
