@@ -8,7 +8,7 @@ public class Interpreter {
 
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.err.println("Usage: java annoylang.Interpreter <source-file>");
+            System.err.println("Usage: java somelang.Interpreter <source-file>");
             System.exit(1);
         }
 
@@ -24,9 +24,9 @@ public class Interpreter {
         }
 
         // Assuming ANTLR generated parser and lexer classes are named AnnoyLangParser and AnnoyLangLexer
-        AnnoyLangLexer lexer = new AnnoyLangLexer(CharStreams.fromString(sourceCode));
+        SomeLangLexer lexer = new SomeLangLexer(CharStreams.fromString(sourceCode));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        AnnoyLangParser parser = new AnnoyLangParser(tokens);
+        SomeLangParser parser = new SomeLangParser(tokens);
 
         // Assuming the entry point of the parser is a method named 'program'
         AST.Program program = parser.program().ast;
