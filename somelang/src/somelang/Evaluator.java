@@ -12,7 +12,9 @@ import somelang.Env.*;
 
 public class Evaluator implements AST.Visitor<Value> {
 
-  Env initEnv = initialEnv(); //New for definelang
+	Printer.Formatter ts = new Printer.Formatter();
+
+  	Env initEnv = initialEnv(); //New for definelang
 	
 	Value valueOf(Program p) {
 			return (Value) p.accept(this, initEnv);
@@ -113,6 +115,21 @@ public class Evaluator implements AST.Visitor<Value> {
 
 	/*Comp/Give/Gain Evaluations*/
 
+	
+
+	public Value visit(GainExp e, Env env) {
+	}
+
+	public Value visit(ReadExp e, Env env) {
+		StringVal fileName = (StringVal) e.file().accept(this, env);
+		try {
+			String text = Reader.readFile("" + System.getProperty("user.dir") + File.separator + fileName.v());
+			return new StringVal(text);
+		} catch (IOException ex) {
+			return new DynamicError(ex.getMessage());
+		}
+	}
+
 	/*The following is last*/
 	private Env initialEnv() {
 		GlobalEnv initEnv = new GlobalEnv();
@@ -134,6 +151,11 @@ public class Evaluator implements AST.Visitor<Value> {
 		/* Add new built-in procedures here */ 
 		
 		return initEnv;
+	}
+
+	Reader _reader; 
+	public Evaluator(Reader reader) {
+		_reader = reader;
 	}
 
 }
