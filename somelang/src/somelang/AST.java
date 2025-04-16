@@ -3,11 +3,9 @@ public interface AST {
 		public abstract <T> T accept(Visitor<T> visitor, Env env);
 	}
 	public static class Program extends ASTNode {
-		List<DefineDecl> _decls;
 		Exp _e;
 
-		public Program(List<DefineDecl>decls, Exp e) {
-			_decls = decls;
+		public Program(Exp e) {
 			_e = e;
 		}
 
@@ -15,16 +13,60 @@ public interface AST {
 			return _e;
 		}
 		
-		public List<DefineDecl> decls() {
-			return _decls;
-		}
-		
-		public <T> T accept(Visitor<T> visitor, Env env) {
-			return visitor.visit(this, env);
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visit(this);
 		}
 	}
 	public static abstract class Exp extends ASTNode {
 
+	}
+
+	public static abstract class CompoundArithExp extends Exp {
+		List<Exp> _rest;
+
+		public CompoundArithExp() {
+			_rest = new ArrayList<Exp>();
+		}
+
+		public CompoundArithExp(Exp fst) {
+			_rest = new ArrayList<Exp>();
+			_rest.add(fst);
+		}
+
+		public CompoundArithExp(List<Exp> args) {
+			_rest = new ArrayList<Exp>();
+			for (Exp e : args)
+				_rest.add((Exp) e);
+		}
+
+		public CompoundArithExp(Exp fst, List<Exp> rest) {
+			_rest = new ArrayList<Exp>();
+			_rest.add(fst);
+			_rest.addAll(rest);
+		}
+
+		public CompoundArithExp(Exp fst, Exp second) {
+			_rest = new ArrayList<Exp>();
+			_rest.add(fst);
+			_rest.add(second);
+		}
+
+		public Exp fst() {
+			return _rest.get(0);
+		}
+
+		public Exp snd() {
+			return _rest.get(1);
+		}
+
+		public List<Exp> all() {
+			return _rest;
+		}
+
+		public void add(Exp e) {
+			_rest.add(e);
+		}
+		
 	}
 
 	/*Insert other functionalities here*/
