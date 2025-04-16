@@ -86,12 +86,21 @@ remexp returns [RemExp ast]
 
 //loosely defined. subject to change
 compare returns [Compare ast]:
-	'compare' l=exp 'to' r=exp {
+	'compare' l=exp 'to' r=exp (c=conditions{$list.add($c.ast)} (repeat)* )* {
 			$list = new ArrayList<Exp>();
                         $list.add($l.ast);
                         $list.add($r.ast);
                         $ast = new Compare($list);
 				   }
+	;
+
+conditions returns [Conditions ast]:
+	'if less than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
+	|'if greater than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
+	|'if eless than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
+	|'if egreater than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
+	|'if equal' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
+	|'else' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
 	;
 
 //loosely defined. subject to change
