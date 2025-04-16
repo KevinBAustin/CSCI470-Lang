@@ -13,8 +13,8 @@ public interface AST {
 			return _e;
 		}
 		
-		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visit(this);
+		public <T> T accept(Visitor<T> visitor, Env env) {
+			return visitor.visit(this, env);
 		}
 	}
 	public static abstract class Exp extends ASTNode {
