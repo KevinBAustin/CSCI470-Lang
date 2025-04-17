@@ -98,7 +98,7 @@ remexp returns [RemExp ast]
 //loosely defined. subject to change
 compare returns [Compare ast]
 	locals [ArrayList<Exp> list]:
-	'compare' l=exp 'to' r=exp (c=conditions{$list.add($c.ast)} ('repeat')* )* {
+	'compare' l=exp 'to' r=exp (c=conditions{$list.add($c.ast);} ('repeat')* )* {
 			$list = new ArrayList<Exp>();
                         $list.add($l.ast);
                         $list.add($r.ast);
