@@ -23,7 +23,7 @@ public class Interpreter {
             System.exit(1);
         }
 
-        // Assuming ANTLR generated parser and lexer classes are named SomeLangParser and SomeLangLexer
+        // Assuming ANTLR generated parser and lexer classes are named AnnoyLangParser and AnnoyLangLexer
         SomeLangLexer lexer = new SomeLangLexer(CharStreams.fromString(sourceCode));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         SomeLangParser parser = new SomeLangParser(tokens);

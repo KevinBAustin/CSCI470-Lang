@@ -28,13 +28,13 @@ action returns [Action ast]:
         | s=subexp { $ast = $s.ast; }
         | m=multexp { $ast = $m.ast; }
         | d=divexp { $ast = $d.ast; }
-	| r=remexp { $ast = $r.ast; }
 	| comp=compare { $ast = $comp.ast; }
 	| give=giveexp { $ast = $give.ast; }
 	| gain=gainexp { $ast = $gain.ast; }
+	| doe=doexp { $ast = $doe.ast; }
 	;
 
-addexp returns [AddExp ast]
+addexp returns [AddExp ast]:
         locals [ArrayList<Exp> list]:
 	l=exp 'add' r=exp { 
                         $list = new ArrayList<Exp>();
@@ -44,7 +44,7 @@ addexp returns [AddExp ast]
 	                   }
 	;
 
-subexp returns [SubExp ast]
+subexp returns [SubExp ast]:
         locals [ArrayList<Exp> list]:
 	l=exp 'sub' r=exp { 
                         $list = new ArrayList<Exp>();
@@ -54,7 +54,7 @@ subexp returns [SubExp ast]
 	                   }
  	;
 
-multexp returns [MultExp ast]
+multexp returns [MultExp ast]:
         locals [ArrayList<Exp> list]:
 	l=exp 'mult' r=exp { 
                         $list = new ArrayList<Exp>();
@@ -64,7 +64,7 @@ multexp returns [MultExp ast]
 	                   }
  	;
 
-divexp returns [DivExp ast]
+divexp returns [DivExp ast]:
         locals [ArrayList<Exp> list]:
 	l=exp 'div' r=exp { 
                         $list = new ArrayList<Exp>();
@@ -74,61 +74,22 @@ divexp returns [DivExp ast]
 	                   }
  	;
 
-remexp returns [RemExp ast]
-	locals [ArrayList<Exp> list]:
-	l=exp 'rem' r=exp {
-                        $list = new ArrayList<Exp>();
-                        $list.add($l.ast);
-                        $list.add($r.ast);
-                        $ast = new RemExp($list);
-                           }
-	;
-
-//loosely defined. subject to change
 compare returns [Compare ast]:
-	'compare' l=exp 'to' r=exp (c=conditions{$list.add($c.ast)} (repeat)* )* {
-			$list = new ArrayList<Exp>();
-                        $list.add($l.ast);
-                        $list.add($r.ast);
-                        $ast = new Compare($list);
-				   }
+	'compare' l=exp 'to' r=exp {
+	
+	}
 	;
 
-conditions returns [Conditions ast]:
-	'if less than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
-	|'if greater than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
-	|'if eless than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
-	|'if egreater than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
-	|'if equal' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
-	|'else' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
-	;
-
-//loosely defined. subject to change
 give returns [Give ast]:
-	'give' id=ID {
-		      $list = new ArrayList<Exp>();
-                      $list.add($id.ast);
-                      $ast = new Give($list); 
-		     }
-	|'give' e=exp {
-                      $list = new ArrayList<Exp>();
-                      $list.add($e.ast);
-                      $ast = new Give($list);
-                     }
+
 	;
 
-//loosely defined. subject to change
 gain returns [Gain ast]:
-	'gain' id=ID{
-		     $list = new ArrayList<Exp>();
-		     $list.add($id.ast);
-		     $ast = new Gain($list);
-	    	    }
-	|'gain' e=exp {
-                      $list = new ArrayList<Exp>();
-                      $list.add($e.ast);
-                      $ast = new Give($list);
-                     }
+
+	;
+
+doexp returns [DoExp ast]:
+
 	;
 
 //lexer rules
@@ -142,4 +103,4 @@ String : '"'[^"]*'"';
 
 // skip rules
 WS  :  [ \t\r\n\u000C]+ -> skip;
-Line_Comment :   '//' ~[\r\n]* -> skip;
+ Line_Comment :   '//' ~[\r\n]* -> skip;
