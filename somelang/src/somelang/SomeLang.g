@@ -9,84 +9,100 @@ program returns [Program ast]
         ;
 
 exp returns [Exp ast]: 
-    	s=statement { $ast = $s.ast; }*
+    	s=statement { $ast = $s.ast; }
 	;
 
 statement returns [Statement ast]:
-	is=isexp { $ast = $is.ast; }
+	s=statement { $ast = $s.ast; }
+	|is=isexp { $ast = $is.ast; }
 	|act=action { $ast = $act.ast; }
-	|num=Number { $ast = $num.ast; }
-	|str=String { $ast = $str.ast; }
+	|num=numexp { $ast = $num.ast; }
+	|str=strexp { $ast = $str.ast; }
 	;
+
+numexp returns [NumExp ast]:
+	n=Number { $ast = new NumExp($n.text); }
+	;
+
+strexp returns [StrExp ast] :
+ 	s=String { $ast = new StrExp($s.text); } 
+ 	;
 
 isexp returns [IsExp ast]:
 	l=ID 'is' r=exp { $ast = new IsExp($l.text, $r.ast); }
  	;
 
 action returns [Action ast]:
-	a=addexp { $ast = $a.ast; }
+	act=action { $ast = $act.ast; }
+	|a=addexp { $ast = $a.ast; }
         | s=subexp { $ast = $s.ast; }
         | m=multexp { $ast = $m.ast; }
         | d=divexp { $ast = $d.ast; }
 	| r=remexp { $ast = $r.ast; }
 	| comp=compare { $ast = $comp.ast; }
-	| give=giveexp { $ast = $give.ast; }
-	| gain=gainexp { $ast = $gain.ast; }
+	| giv=give { $ast = $giv.ast; }
+	| gai=gain { $ast = $gai.ast; }
 	;
 
 addexp returns [AddExp ast]
         locals [ArrayList<Exp> list]:
-	l=exp 'add' r=exp { 
+	l=addexp 'add' r=exp { 
                         $list = new ArrayList<Exp>();
 			$list.add($l.ast);
 			$list.add($r.ast);
 			$ast = new AddExp($list);		 
 	                   }
+	|num=numexp { $ast = $num.ast; }
 	;
 
 subexp returns [SubExp ast]
         locals [ArrayList<Exp> list]:
-	l=exp 'sub' r=exp { 
+	l=subexp 'sub' r=exp { 
                         $list = new ArrayList<Exp>();
 			$list.add($l.ast);
 			$list.add($r.ast);
 			$ast = new SubExp($list);		 
 	                   }
+        |num=numexp { $ast = $num.ast; }
  	;
 
 multexp returns [MultExp ast]
         locals [ArrayList<Exp> list]:
-	l=exp 'mult' r=exp { 
+	l=multexp 'mult' r=exp { 
                         $list = new ArrayList<Exp>();
 			$list.add($l.ast);
 			$list.add($r.ast);
 			$ast = new MultExp($list);		 
 	                   }
+        |num=numexp { $ast = $num.ast; }
  	;
 
 divexp returns [DivExp ast]
         locals [ArrayList<Exp> list]:
-	l=exp 'div' r=exp { 
+	l=divexp 'div' r=exp { 
                         $list = new ArrayList<Exp>();
 			$list.add($l.ast);
 			$list.add($r.ast);
 			$ast = new DivExp($list);		 
 	                   }
+        |num=numexp { $ast = $num.ast; }
  	;
 
 remexp returns [RemExp ast]
 	locals [ArrayList<Exp> list]:
-	l=exp 'rem' r=exp {
+	l=remexp 'rem' r=exp {
                         $list = new ArrayList<Exp>();
                         $list.add($l.ast);
                         $list.add($r.ast);
                         $ast = new RemExp($list);
                            }
+        |num=numexp { $ast = $num.ast; }
 	;
 
 //loosely defined. subject to change
-compare returns [Compare ast]:
-	'compare' l=exp 'to' r=exp (c=conditions{$list.add($c.ast)} (repeat)* )* {
+compare returns [Compare ast]
+	locals [ArrayList<Exp> list]:
+	'compare' l=exp 'to' r=exp (c=conditions{$list.add($c.ast)} ('repeat')* )* {
 			$list = new ArrayList<Exp>();
                         $list.add($l.ast);
                         $list.add($r.ast);
@@ -94,7 +110,8 @@ compare returns [Compare ast]:
 				   }
 	;
 
-conditions returns [Conditions ast]:
+conditions returns [Conditions ast]
+	locals [ArrayList<Exp> list]:
 	'if less than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
 	|'if greater than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
 	|'if eless than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
@@ -104,31 +121,16 @@ conditions returns [Conditions ast]:
 	;
 
 //loosely defined. subject to change
-give returns [Give ast]:
-	'give' id=ID {
-		      $list = new ArrayList<Exp>();
-                      $list.add($id.ast);
-                      $ast = new Give($list); 
-		     }
-	|'give' e=exp {
-                      $list = new ArrayList<Exp>();
-                      $list.add($e.ast);
-                      $ast = new Give($list);
-                     }
+give returns [Give ast]
+	locals [ArrayList<Exp> list]:
+	'give' id=ID {$ast = new Give($id.text);}
+	|'give' e=exp {$ast = new Give($e.text);}
 	;
 
 //loosely defined. subject to change
-gain returns [Gain ast]:
-	'gain' id=ID{
-		     $list = new ArrayList<Exp>();
-		     $list.add($id.ast);
-		     $ast = new Gain($list);
-	    	    }
-	|'gain' e=exp {
-                      $list = new ArrayList<Exp>();
-                      $list.add($e.ast);
-                      $ast = new Give($list);
-                     }
+gain returns [Gain ast]
+	locals [ArrayList<Exp> list]:
+	'gain' id=ID {$ast = new Gain($id.text);}
 	;
 
 //lexer rules
