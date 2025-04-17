@@ -43,7 +43,7 @@ public interface Value {
         }
 
         public String toString() {
-            String tmp = "" + _val
+            String tmp = "" + _val;
             return tmp;
         }
     }

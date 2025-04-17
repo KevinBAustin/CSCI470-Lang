@@ -13,10 +13,7 @@ exp returns [Exp ast]:
 	;
 
 statement returns [Statement ast]:
-	s=statement { $ast = $s.ast; }
-	|is=isexp { $ast = $is.ast; }
-	|act=action { $ast = $act.ast; }
-	|num=numexp { $ast = $num.ast; }
+	is=isexp { $ast = $is.ast; }
 	|str=strexp { $ast = $str.ast; }
 	;
 
@@ -33,8 +30,7 @@ isexp returns [IsExp ast]:
  	;
 
 action returns [Action ast]:
-	act=action { $ast = $act.ast; }
-	|a=addexp { $ast = $a.ast; }
+	a=addexp { $ast = $a.ast; }
         | s=subexp { $ast = $s.ast; }
         | m=multexp { $ast = $m.ast; }
         | d=divexp { $ast = $d.ast; }
