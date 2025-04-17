@@ -15,7 +15,7 @@ public class Evaluator implements AST.Visitor<Value> {
 	Printer.Formatter ts = new Printer.Formatter();
 
   	Env initEnv = initialEnv(); //New for definelang
-	
+
 	Value valueOf(Program p) {
 			return (Value) p.accept(this, initEnv);
 	}
@@ -29,21 +29,6 @@ public class Evaluator implements AST.Visitor<Value> {
 			result += intermediate.v(); //Semantics of AddExp in terms of the target language.
 		}
 		return new NumVal(result);
-	}
-	
-	@Override
-	public Value visit(UnitExp e, Env env) {
-		return new UnitVal();
-	}
-
-	@Override
-	public Value visit(NumExp e, Env env) {
-		return new NumVal(e.v());
-	}
-
-	@Override
-	public Value visit(StrExp e, Env env) {
-		return new StringVal(e.v());
 	}
 
 	@Override
@@ -94,11 +79,6 @@ public class Evaluator implements AST.Visitor<Value> {
 	}
 
 	@Override
-	public Value visit(Program p) {
-		return (Value) p.e().accept(this, env);
-	}
-
-	@Override
 	public Value visit(IsExp e, Env env) { // New for definelang.
 		String name = e.name();
 		Exp value_exp = e.value_exp();
@@ -108,16 +88,33 @@ public class Evaluator implements AST.Visitor<Value> {
 	}
 
 	@Override
-	public Value visit(NullExp e, Env env) {
-		Value val = (Value) e.arg().accept(this, env);
-		return new BoolVal(val instanceof Value.Null);
-	}
+    	public Value visit(AST.StringExp e, Env env) {
+        	return e.exp().accept(this, env);
+    	}
+
+	@Override
+	public Value visit(AST.NumExp e, Env env) {
+        	return new NumValue(e.v());
+    	}
 
 	/*Comp/Give/Gain Evaluations*/
-
-	
+/*
+	public Value visit(Compare e, Env env){
+		
+	}
+*/
+	public Value visit(GiveExp e, Env env) {
+		Value exp = e.exp().accept(this, env);
+		System.out.println(exp);
+		return exp;
+	}
 
 	public Value visit(GainExp e, Env env) {
+		String name = e.name();
+		List<Exp> value_exps = e.value_exps();
+		Value value = (Value) value_exp.accept(this, env);
+		((GlobalEnv) initEnv).extend(name, value);
+		return new Value.UnitVal();
 	}
 
 	public Value visit(ReadExp e, Env env) {

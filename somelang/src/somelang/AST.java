@@ -103,17 +103,6 @@ public interface AST {
 		}
 	}
 
-	public static class NullExp extends Exp {
-		private Exp _arg; 
-		public NullExp(Exp arg){
-			_arg = arg;
-		}
-		public Exp arg() { return _arg; }
-		public <T> T accept(Visitor<T> visitor, Env env) {
-			return visitor.visit(this, env);
-		}
-	}
-
 	public static class AddExp extends CompoundArithExp {
 		public AddExp(Exp fst) {
 			super(fst);
