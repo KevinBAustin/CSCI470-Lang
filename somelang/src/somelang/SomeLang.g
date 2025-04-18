@@ -1,11 +1,8 @@
 grammar SomeLang;
 
 //parser rules
-program returns [Program ast]
-        locals [ArrayList<Exp> list]
-        @init { $list = new ArrayList<Exp>(); }:
-
-        (e=exp { $list.add($e.ast);})* { $ast = new Program($list); }
+program returns [Program ast]:
+        e=exp { $ast = new Program($e.ast); }
         ;
 
 exp returns [Exp ast]: 
@@ -19,10 +16,20 @@ exp returns [Exp ast]:
         | comp=compare { $ast = $comp.ast; }
         | giv=give { $ast = $giv.ast; }
         | gai=gain { $ast = $gai.ast; }
-        ;
+	| bl=boolexp { $ast = $bl.ast; }        
+	;
 
-numexp returns [NumExp ast]:
-	n=Number { $ast = new NumExp($n.text); }
+boolexp returns [BoolExp ast] :
+ 		TrueLiteral { $ast = new BoolExp(true); } 
+ 		| FalseLiteral { $ast = new BoolExp(false); } 
+ 		;
+
+numexp returns [NumExp ast]
+	locals [ArrayList<Exp> list]:
+	n0=Number { $ast = new NumExp(Integer.parseInt($n0.text)); } 
+  		| '-' n0=Number { $ast = new NumExp(-Integer.parseInt($n0.text)); }
+  		| n0=Number Dot n1=Number { $ast = new NumExp(Double.parseDouble($n0.text+"."+$n1.text)); }
+  		| '-' n0=Number Dot n1=Number { $ast = new NumExp(Double.parseDouble("-" + $n0.text+"."+$n1.text)); }
 	;
 
 strexp returns [StrExp ast] :
@@ -39,7 +46,7 @@ addexp returns [AddExp ast]
                         $list = new ArrayList<Exp>();
 			$list.add($l.ast);
 			$list.add($r.ast);
-			$ast = new AddExp($list);		 
+			$ast = new Exp($list);		 
 	                   }
 	|num=numexp { $ast = $num.ast; }
 	;
@@ -140,11 +147,16 @@ gain returns [Gain ast]
 //lexer rules
 ID : [^0-9(),<-=.;$"][^(),<-=.;$"]*;
 
-Number : [0-9]+
-        | [0-9]+ '.' [0-9]+
-        ;
+Dot : '.' ;
+
+Number : DIGIT+ ;
+
+fragment DIGIT: ('0'..'9');
 
 String : '"'[^"]*'"';
+
+TrueLiteral : '#t' ;
+ FalseLiteral : '#f' ;
 
 // skip rules
 WS  :  [ \t\r\n\u000C]+ -> skip;

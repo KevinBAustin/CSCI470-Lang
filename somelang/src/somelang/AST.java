@@ -78,6 +78,22 @@ public interface AST {
 
 	/*Insert other functionalities here*/
 
+	public static class BoolExp extends Exp {
+		boolean _val;
+
+		public BoolExp(boolean v) {
+			_val = v;
+		}
+
+		public boolean v() {
+			return _val;
+		}
+		
+		public <T> T accept(Visitor<T> visitor, Env env) {
+			return visitor.visit(this, env);
+		}
+	}
+
 	public static class NumExp extends Exp {
 		double _val;
 
@@ -238,8 +254,14 @@ public interface AST {
 	}
 
 	public static class Ilt extends Compare {
-		public Ilt(Exp first_exp, Exp second_exp) {
+		Exp _then_exp;
+		Exp _else_exp;
+		public Exp then_exp() { return _then_exp; }
+		public Exp else_exp() { return _else_exp; }
+		public Ilt(Exp first_exp, Exp second_exp,Exp then_exp, Exp else_exp) {
 			super(first_exp, second_exp);
+			_then_exp = then_exp;
+                        _else_exp = else_exp;
 		}
 		public <T> T accept(Visitor<T> visitor, Env env) {
 			return visitor.visit(this, env);
@@ -247,8 +269,16 @@ public interface AST {
 	}
 
 	public static class Igt extends Compare {
-                public Igt(Exp first_exp, Exp second_exp) {
+                Exp _then_exp;
+                Exp _else_exp;
+
+            
+                public Exp then_exp() { return _then_exp; }
+                public Exp else_exp() { return _else_exp; }
+		public Igt(Exp first_exp, Exp second_exp,Exp then_exp, Exp else_exp) {
 			super(first_exp, second_exp);
+			_then_exp = then_exp;
+                        _else_exp = else_exp;
 		}
 		public <T> T accept(Visitor<T> visitor, Env env) {
                         return visitor.visit(this, env);
@@ -256,8 +286,15 @@ public interface AST {
         }
 
 	public static class Elt extends Compare {
-                public Elt(Exp first_exp, Exp second_exp) {
+		Exp _then_exp;
+                Exp _else_exp;
+
+                public Exp then_exp() { return _then_exp; }
+                public Exp else_exp() { return _else_exp; }
+                public Elt(Exp first_exp, Exp second_exp,Exp then_exp, Exp else_exp) {
                         super(first_exp, second_exp);
+			_then_exp = then_exp;
+                        _else_exp = else_exp;
                 }
 		public <T> T accept(Visitor<T> visitor, Env env) {
                         return visitor.visit(this, env);
@@ -265,8 +302,15 @@ public interface AST {
         }
 
 	public static class Egt extends Compare {
-                public Egt(Exp first_exp, Exp second_exp) {
+                Exp _then_exp;
+                Exp _else_exp;
+
+                public Exp then_exp() { return _then_exp; }
+                public Exp else_exp() { return _else_exp; }
+		public Egt(Exp first_exp, Exp second_exp,Exp then_exp, Exp else_exp) {
                         super(first_exp, second_exp);
+			_then_exp = then_exp;
+                        _else_exp = else_exp;
                 }
 		public <T> T accept(Visitor<T> visitor, Env env) {
                         return visitor.visit(this, env);
@@ -274,8 +318,15 @@ public interface AST {
         }
 
 	public static class Eq extends Compare {
-                public Eq(Exp first_exp, Exp second_exp) {
+                Exp _then_exp;
+                Exp _else_exp;
+
+                public Exp then_exp() { return _then_exp; }
+                public Exp else_exp() { return _else_exp; }
+		public Eq(Exp first_exp, Exp second_exp,Exp then_exp, Exp else_exp) {
                         super(first_exp, second_exp);
+			_then_exp = then_exp;
+                        _else_exp = else_exp;
                 }
 		public <T> T accept(Visitor<T> visitor, Env env) {
                         return visitor.visit(this, env);
@@ -336,6 +387,7 @@ public interface AST {
 	}
 
   public interface Visitor <T> {
+	  public T visit(AST.BoolExp e, Env env);
 	  public T visit(AST.AddExp e, Env env);
 	  public T visit(AST.NumExp e, Env env);
 	  public T visit(AST.StrExp e, Env env);

@@ -1,8 +1,4 @@
 package somelang;
-
-import java.util.HashMap;
-import java.util.Map;
-
 public interface Env {
 	Value get (String search_var);
 	boolean isEmpty();

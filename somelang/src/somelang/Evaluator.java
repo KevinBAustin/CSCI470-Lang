@@ -1,18 +1,21 @@
 package somelang;
-import static somelang.AST.*;
-import static somelang.Value.*;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
 
+import static somelang.AST.*;
+import static somelang.Value.*;
 import somelang.Env.*;
 
 public class Evaluator implements AST.Visitor<Value> {
 
-  	Env initEnv = initialEnv();
-	
+
+	@Override
+	public Value visit(BoolExp e, Env env) {
+		return new BoolVal(e.v());
+	}
 
 	@Override
     	public Value visit(Program p, Env env) {
@@ -87,8 +90,7 @@ public class Evaluator implements AST.Visitor<Value> {
 		String name = e.name();
 		Exp value_exp = e.value_exp();
 		Value value = (Value) value_exp.accept(this, env);
-		((GlobalEnv) initEnv).extend(name, value);
-		return new Value.UnitVal();		
+		return null;		
 	}
 
 	@Override
@@ -98,7 +100,7 @@ public class Evaluator implements AST.Visitor<Value> {
 
 	@Override
 	public Value visit(AST.NumExp e, Env env) {
-        	return new NumValue(e.v());
+        	return new NumVal(e.v());
     	}
 
 	/*Comp/Give/Gain Evaluations*/
@@ -111,8 +113,7 @@ public class Evaluator implements AST.Visitor<Value> {
 	public Value visit(Ilt e, Env env){
 		Value.NumVal first = (Value.NumVal) e.first_exp().accept(this, env);
 		Value.NumVal second = (Value.NumVal) e.second_exp().accept(this, env);
-		Value.BoolVal condition = Value.BoolVal(first.v() < second.v());
-
+		Value.BoolVal condition = new Value.BoolVal(first.v() < second.v());
 		if(condition.v())
 			return (Value) e.then_exp().accept(this, env);
 		else return (Value) e.else_exp().accept(this, env);
@@ -121,7 +122,7 @@ public class Evaluator implements AST.Visitor<Value> {
 	public Value visit(Igt e, Env env){
 		Value.NumVal first = (Value.NumVal) e.first_exp().accept(this, env);
                 Value.NumVal second = (Value.NumVal) e.second_exp().accept(this, env);
-                Value.BoolVal condition = Value.BoolVal(first.v() > second.v());
+                Value.BoolVal condition = new Value.BoolVal(first.v() > second.v());
 
                 if(condition.v())
                         return (Value) e.then_exp().accept(this, env);
@@ -131,7 +132,7 @@ public class Evaluator implements AST.Visitor<Value> {
 	public Value visit(Elt e, Env env){
 		Value.NumVal first = (Value.NumVal) e.first_exp().accept(this, env);
                 Value.NumVal second = (Value.NumVal) e.second_exp().accept(this, env);
-                Value.BoolVal condition = Value.BoolVal(first.v() <= second.v());
+                Value.BoolVal condition = new Value.BoolVal(first.v() <= second.v());
 
                 if(condition.v())
                         return (Value) e.then_exp().accept(this, env);
@@ -141,7 +142,7 @@ public class Evaluator implements AST.Visitor<Value> {
 	public Value visit(Egt e, Env env){
 		Value.NumVal first = (Value.NumVal) e.first_exp().accept(this, env);
                 Value.NumVal second = (Value.NumVal) e.second_exp().accept(this, env);
-                Value.BoolVal condition = Value.BoolVal(first.v() >= second.v());
+                Value.BoolVal condition = new Value.BoolVal(first.v() >= second.v());
 
                 if(condition.v())
                         return (Value) e.then_exp().accept(this, env);
@@ -151,7 +152,7 @@ public class Evaluator implements AST.Visitor<Value> {
 	public Value visit(Eq e, Env env){
 		Value.NumVal first = (Value.NumVal) e.first_exp().accept(this, env);
                 Value.NumVal second = (Value.NumVal) e.second_exp().accept(this, env);
-                Value.BoolVal condition = Value.BoolVal(first.v() == second.v());
+                Value.BoolVal condition = new Value.BoolVal(first.v() == second.v());
 
                 if(condition.v())
                         return (Value) e.then_exp().accept(this, env);
@@ -167,34 +168,9 @@ public class Evaluator implements AST.Visitor<Value> {
 
 	public Value visit(Gain e, Env env) {
 		String name = e.name();
-		List<Exp> value_exps = e.value_exps();
-		Value value = (Value) value_exp.accept(this, env);
-		((GlobalEnv) initEnv).extend(name, value);
-		return new Value.UnitVal();
-	}
-
-	
-	/*The following is last*/
-	private Env initialEnv() {
-		GlobalEnv initEnv = new GlobalEnv();
-		
-		/* Procedure: (read <filename>). Following is same as (define read (lambda (file) (read file))) */
-		List<String> formals = new ArrayList<>();
-		formals.add("file");
-		Exp body = new AST.ReadExp(new VarExp("file"));
-		Value.FunVal readFun = new Value.FunVal(initEnv, formals, body);
-		initEnv.extend("read", readFun);
-
-		/* Procedure: (require <filename>). Following is same as (define require (lambda (file) (eval (read file)))) */
-		formals = new ArrayList<>();
-		formals.add("file");
-		body = new EvalExp(new AST.ReadExp(new VarExp("file")));
-		Value.FunVal requireFun = new Value.FunVal(initEnv, formals, body);
-		initEnv.extend("require", requireFun);
-		
-		/* Add new built-in procedures here */ 
-		
-		return initEnv;
+                Exp value_exp = e.value_exp();
+                Value value = (Value) value_exp.accept(this, env);
+                return null;
 	}
 
 }

@@ -1,41 +1,39 @@
 package somelang;
-
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
+import somelang.Env;
+import somelang.Value;
+import somelang.AST.*;
+
+/**
+ * This main class implements the Read-Eval-Print-Loop of the interpreter with
+ * the help of Reader, Evaluator, and Printer classes. 
+ * 
+ * @author hridesh
+ *
+ */
 public class Interpreter {
-
-    public static void main(String[] args) {
-        if (args.length < 1) {
-            System.err.println("Usage: java somelang.Interpreter <source-file>");
-            System.exit(1);
-        }
-
-        String sourceFile = args[0];
-        String sourceCode = "";
-
-        try {
-            sourceCode = new String(Files.readAllBytes(Paths.get(sourceFile)));
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + sourceFile);
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        // Assuming ANTLR generated parser and lexer classes are named AnnoyLangParser and AnnoyLangLexer
-        SomeLangLexer lexer = new SomeLangLexer(CharStreams.fromString(sourceCode));
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        SomeLangParser parser = new SomeLangParser(tokens);
-
-        // Assuming the entry point of the parser is a method named 'program'
-        AST.Program program = parser.program().ast;
-
-        // Create an evaluator and evaluate the program AST
-        Env globalEnv = new Env.RefEnv();
-        Evaluator evaluator = new Evaluator();
-        Value result = evaluator.visit(program, globalEnv);
-
-        System.out.println("Program result: " + result);
-    }
+	public static void main(String[] args) {
+		System.out.println("Type a program to evaluate and press the enter key," + 
+							" e.g. ((lambda (av bv cv) (let ((a av) (b bv) (c cv) (d 279) (e 277)) (+ (* a b) (/ c (- d e))))) 3 100 84) \n" + 
+							"Press Ctrl + C to exit.");
+		Reader reader = new Reader();
+//		Evaluator eval = new Evaluator(reader);
+		Printer printer = new Printer();
+		REPL: while (true) { // Read-Eval-Print-Loop (also known as REPL)
+			Program p = null;
+			try {
+				p = reader.read();
+				if(p._e == null) continue REPL;
+//				Value val = eval.valueOf(p);
+//				printer.print(val);
+			} catch (Env.LookupException e) {
+				printer.print(e);
+			} catch (IOException e) {
+				System.out.println("Error reading input:" + e.getMessage());
+			} catch (NullPointerException e) {
+				System.out.println("Error:" + e.getMessage());
+			}
+		}
+	}
 }
