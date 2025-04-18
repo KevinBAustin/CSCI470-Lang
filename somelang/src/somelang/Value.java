@@ -1,77 +1,28 @@
 package somelang;
 
+import java.util.List;
+
+import somelang.AST.Exp;
+
 public interface Value {
     public String toString();
 
-    static class FunValue implements Value {
-        private Env _env;
-        private AST.Exp _body;
+    static class NumVal implements Value {
+		private double _val;
+	    public NumVal(double v) { _val = v; } 
+	    public double v() { return _val; }
+	    public String toString() { 
+	    	int tmp = (int) _val;
+	    	if(tmp == _val) return "" + tmp;
+	    	return "" + _val; 
+	    }
+	}
 
-        public Env env() {
-            return _env;
-        }
-
-        public AST.Exp body() {
-            return _body;
-        }
-
-        public String toString() {
-            return "<function>";
-        }
+    static class StringValue implements Value{
+        private java.lang.String _val;
+	    public StringVal(String v) { _val = v; } 
+	    public String v() { return _val; }
+	    public java.lang.String tostring() { return "" + _val; }
     }
 
-    public static class NumValue implements Value {
-        private double _val;
-
-        public NumValue(double v) {
-            _val = v;
-        }
-
-        public double v() {
-            return _val;
-        }
-
-        public String toString() {
-            String tmp = "" + _val;
-            return tmp;
-        }
-    }
-
-    public static class StringValue implements Value{
-        private String _val;
-
-        public StringValue(String v) {
-            _val = v;
-        }
-
-        public String v() {
-            return _val;
-        }
-
-        public String toString() {
-            return _val;
-        }
-    }
-
-    public static class NullValue implements Value {
-        public String toString() {
-            return "<null>";
-        }
-    }
-
-    public static class Error implements Value {
-        private String _msg;
-
-        public Error(String msg) {
-            _msg = msg;
-        }
-
-        public String msg() {
-            return _msg;
-        }
-
-        public String toString() {
-            return _msg;
-        }
-    }
 }
