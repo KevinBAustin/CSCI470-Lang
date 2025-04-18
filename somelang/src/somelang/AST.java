@@ -1,3 +1,10 @@
+package somelang;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
 public interface AST {
 	public static abstract class ASTNode implements AST {
 		public abstract <T> T accept(Visitor<T> visitor, Env env);
@@ -213,73 +220,102 @@ public interface AST {
 			return visitor.visit(this, env);
 		}
 	}
+
+	public static abstract class Compare extends Exp {
+		private Exp _first_exp; 
+		private Exp _second_exp; 
+		Compare(Exp first_exp, Exp second_exp) {
+			_first_exp = first_exp;
+			_second_exp = second_exp; 
+		}
+		public Exp first_exp() { return _first_exp; }
+		public Exp second_exp() { return _second_exp; }
+		
+	}
+
+	public static abstract class Conditions extends Exp {
+
+	}
+
+	public static class Ilt extends Compare {
+		public Ilt(Exp first_exp, Exp second_exp) {
+			super(first_exp, second_exp);
+		}
+		public <T> T accept(Visitor<T> visitor, Env env) {
+			return visitor.visit(this, env);
+		}	
+	}
+
+	public static class Igt extends Compare {
+                public Igt(Exp first_exp, Exp second_exp) {
+			super(first_exp, second_exp);
+		}
+		public <T> T accept(Visitor<T> visitor, Env env) {
+                        return visitor.visit(this, env);
+                }
+        }
+
+	public static class Elt extends Compare {
+                public Elt(Exp first_exp, Exp second_exp) {
+                        super(first_exp, second_exp);
+                }
+		public <T> T accept(Visitor<T> visitor, Env env) {
+                        return visitor.visit(this, env);
+                }
+        }
+
+	public static class Egt extends Compare {
+                public Egt(Exp first_exp, Exp second_exp) {
+                        super(first_exp, second_exp);
+                }
+		public <T> T accept(Visitor<T> visitor, Env env) {
+                        return visitor.visit(this, env);
+                }
+        }
+
+	public static class Eq extends Compare {
+                public Eq(Exp first_exp, Exp second_exp) {
+                        super(first_exp, second_exp);
+                }
+		public <T> T accept(Visitor<T> visitor, Env env) {
+                        return visitor.visit(this, env);
+                }
+        }
+
+	public static class Give extends Exp {
+		Exp exp;
+
+		public Give(Exp exp) {
+			this.exp = exp;
+		}
+
+		public Exp exp() {
+			return exp;
+		}
+
+		public <T> T accept(Visitor<T> visitor, Env env) {
+			return visitor.visit(this, env);
+		}
+	}
+
+	public static class Gain extends Exp {
+		String _name;
+                Exp _value_exp;
+
+                public Gain(String name, Exp value_exp) {
+                        _name = name;
+                        _value_exp = value_exp;
+                }
+
+                public <T> T accept(Visitor<T> visitor, Env env) {
+                        return visitor.visit(this, env);
+                }
+
+                public String name() { return _name; }
+
+                public Exp value_exp() { return _value_exp; }
+	}
 	
-	public static class Compare extends CompoundArithExp {
-		public Compare(Exp fst) {
-			super(fst);
-		}
-
-		public Compare(List<Exp> args) {
-			super(args);
-		}
-
-		public Compare(Exp fst, List<Exp> rest) {
-			super(fst, rest);
-		}
-
-		public Compare(Exp left, Exp right) {
-			super(left, right);
-		}
-		
-		public <T> T accept(Visitor<T> visitor, Env env) {
-			return visitor.visit(this, env);
-		}
-	}
-
-	public static class GiveExp extends CompoundArithExp {
-		public GiveExp(Exp fst) {
-			super(fst);
-		}
-
-		public GiveExp(List<Exp> args) {
-			super(args);
-		}
-
-		public GiveExp(Exp fst, List<Exp> rest) {
-			super(fst, rest);
-		}
-
-		public GiveExp(Exp left, Exp right) {
-			super(left, right);
-		}
-		
-		public <T> T accept(Visitor<T> visitor, Env env) {
-			return visitor.visit(this, env);
-		}
-	}
-
-	public static class GainExp extends CompoundArithExp {
-		public GainExp(Exp fst) {
-			super(fst);
-		}
-
-		public GainExp(List<Exp> args) {
-			super(args);
-		}
-
-		public GainExp(Exp fst, List<Exp> rest) {
-			super(fst, rest);
-		}
-
-		public GainExp(Exp left, Exp right) {
-			super(left, right);
-		}
-		
-		public <T> T accept(Visitor<T> visitor, Env env) {
-			return visitor.visit(this, env);
-		}
-	}
-
 	public static class IsExp extends Exp {
 		String _name;
 		Exp _value_exp; 
@@ -299,25 +335,8 @@ public interface AST {
 
 	}
 
-	/**
-	 * Read expression: reads the file that is _file
-	 * @author hridesh
-	 *
-	 */
-	public static class ReadExp extends Exp {
-		private Exp _file; 
-		public ReadExp(Exp file){
-			_file = file;
-		}
-		public Exp file() { return _file; }
-		public <T> T accept(Visitor<T> visitor, Env env) {
-			return visitor.visit(this, env);
-		}
-	}
-
   public interface Visitor <T> {
-    public T visit(AST.AddExp e, Env env);
-	  public T visit(AST.UnitExp e, Env env);
+	  public T visit(AST.AddExp e, Env env);
 	  public T visit(AST.NumExp e, Env env);
 	  public T visit(AST.StrExp e, Env env);
 	  public T visit(AST.DivExp e, Env env);
@@ -325,10 +344,14 @@ public interface AST {
 	  public T visit(AST.Program p, Env env);
 	  public T visit(AST.SubExp e, Env env);
 	  public T visit(AST.RemExp e, Env env);
-	  public T visit(AST.Compare e, Env env);
-	  public T visit(AST.GiveExp e, Env env);
-	  public T visit(AST.GainExp e, Env env);
+	  //public T visit(AST.Compare e, Env env);
+	  public T visit(AST.Give e, Env env);
+	  public T visit(AST.Gain e, Env env);
 	  public T visit(AST.IsExp e, Env env);
-	  public T visit(AST.NullExp e, Env env);
+	  public T visit(AST.Ilt e, Env env);
+	  public T visit(AST.Igt e, Env env);
+	  public T visit(AST.Elt e, Env env);
+	  public T visit(AST.Egt e, Env env);
+	  public T visit(AST.Eq e, Env env);
   }
 }

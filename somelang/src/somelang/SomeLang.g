@@ -9,13 +9,17 @@ program returns [Program ast]
         ;
 
 exp returns [Exp ast]: 
-    	s=statement { $ast = $s.ast; }
-	;
-
-statement returns [Statement ast]:
 	is=isexp { $ast = $is.ast; }
-	|str=strexp { $ast = $str.ast; }
-	;
+        |str=strexp { $ast = $str.ast; }
+	|a=addexp { $ast = $a.ast; }
+        | s=subexp { $ast = $s.ast; }
+        | m=multexp { $ast = $m.ast; }
+        | d=divexp { $ast = $d.ast; }
+        | r=remexp { $ast = $r.ast; }
+        | comp=compare { $ast = $comp.ast; }
+        | giv=give { $ast = $giv.ast; }
+        | gai=gain { $ast = $gai.ast; }
+        ;
 
 numexp returns [NumExp ast]:
 	n=Number { $ast = new NumExp($n.text); }
@@ -28,17 +32,6 @@ strexp returns [StrExp ast] :
 isexp returns [IsExp ast]:
 	l=ID 'is' r=exp { $ast = new IsExp($l.text, $r.ast); }
  	;
-
-action returns [Action ast]:
-	a=addexp { $ast = $a.ast; }
-        | s=subexp { $ast = $s.ast; }
-        | m=multexp { $ast = $m.ast; }
-        | d=divexp { $ast = $d.ast; }
-	| r=remexp { $ast = $r.ast; }
-	| comp=compare { $ast = $comp.ast; }
-	| giv=give { $ast = $giv.ast; }
-	| gai=gain { $ast = $gai.ast; }
-	;
 
 addexp returns [AddExp ast]
         locals [ArrayList<Exp> list]:
@@ -98,7 +91,7 @@ remexp returns [RemExp ast]
 //loosely defined. subject to change
 compare returns [Compare ast]
 	locals [ArrayList<Exp> list]:
-	'compare' l=exp 'to' r=exp (c=conditions{$list.add($c.ast);} ('repeat')* )* {
+	'compare' l=exp 'to' r=exp (c=conditions{$ast = $c.ast;} ('repeat')* )+ {
 			$list = new ArrayList<Exp>();
                         $list.add($l.ast);
                         $list.add($r.ast);
@@ -106,15 +99,30 @@ compare returns [Compare ast]
 				   }
 	;
 
-conditions returns [Conditions ast]
-	locals [ArrayList<Exp> list]:
-	'if less than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
-	|'if greater than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
-	|'if eless than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
-	|'if egreater than' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
-	|'if equal' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
-	|'else' (e=exp { $list.add($e.ast);})* { $ast = new Conditions($list); }
+conditions returns [Conditions ast]:
+	'if less than' ilt = iltexp { $ast = $ilt.ast; }
+	|'if greater than' igt = igtexp { $ast = $igt.ast; }
+	|'if eless than' elt = eltexp { $ast = $elt.ast; }
+	|'if egreater than' egt = egtexp { $ast = $egt.ast; }
+	|'if equal' eq = eqexp { $ast = $eq.ast; }
+	|'else' e=exp { $ast = $e.ast; }
 	;
+
+iltexp returns [Ilt ast]:
+	e=exp { $ast = $e.ast; }
+	;
+igtexp returns [Igt ast]:
+        e=exp { $ast = $e.ast; }
+        ;
+eltexp returns [Elt ast]:
+        e=exp { $ast = $e.ast; }
+        ;
+egtexp returns [Egt ast]:
+        e=exp { $ast = $e.ast; }
+        ;
+eqexp returns [Eq ast]:
+        e=exp { $ast = $e.ast; }
+        ;
 
 //loosely defined. subject to change
 give returns [Give ast]

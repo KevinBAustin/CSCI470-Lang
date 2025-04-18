@@ -5,21 +5,10 @@ public interface Value {
 
     static class FunValue implements Value {
         private Env _env;
-        private List<String> _formals;
         private AST.Exp _body;
-
-        public FunValue(Env env, List<String> formals, AST.Exp body) {
-            _env = env;
-            _formals = formals;
-            _body = body;
-        }
 
         public Env env() {
             return _env;
-        }
-
-        public List<String> formals() {
-            return _formals;
         }
 
         public AST.Exp body() {

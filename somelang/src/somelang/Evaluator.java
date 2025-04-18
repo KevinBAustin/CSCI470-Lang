@@ -1,23 +1,27 @@
 package somelang;
+import static somelang.AST.*;
+import static somelang.Value.*;
 
-import java.util.List;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
 
-import static somelang.AST.*;
-import static somelang.Value.*;
 import somelang.Env.*;
 
 public class Evaluator implements AST.Visitor<Value> {
 
-	Printer.Formatter ts = new Printer.Formatter();
+  	Env initEnv = initialEnv();
+	
 
-  	Env initEnv = initialEnv(); //New for definelang
+	@Override
+    	public Value visit(Program p, Env env) {
+		return (Value) p.e().accept(this, env);
+	}
 
-	Value valueOf(Program p) {
-			return (Value) p.accept(this, initEnv);
+	Value valueOf(Program p, Env env) {
+		// Value of a program in this language is the value of the expression
+		return (Value) p.accept(this, env);
 	}
 	
 	@Override
@@ -88,8 +92,8 @@ public class Evaluator implements AST.Visitor<Value> {
 	}
 
 	@Override
-    	public Value visit(AST.StringExp e, Env env) {
-        	return e.exp().accept(this, env);
+    	public Value visit(StrExp e, Env env) {
+        	return new StringVal(e.v());
     	}
 
 	@Override
@@ -103,13 +107,65 @@ public class Evaluator implements AST.Visitor<Value> {
 		
 	}
 */
-	public Value visit(GiveExp e, Env env) {
+	
+	public Value visit(Ilt e, Env env){
+		Value.NumVal first = (Value.NumVal) e.first_exp().accept(this, env);
+		Value.NumVal second = (Value.NumVal) e.second_exp().accept(this, env);
+		Value.BoolVal condition = Value.BoolVal(first.v() < second.v());
+
+		if(condition.v())
+			return (Value) e.then_exp().accept(this, env);
+		else return (Value) e.else_exp().accept(this, env);
+	}
+
+	public Value visit(Igt e, Env env){
+		Value.NumVal first = (Value.NumVal) e.first_exp().accept(this, env);
+                Value.NumVal second = (Value.NumVal) e.second_exp().accept(this, env);
+                Value.BoolVal condition = Value.BoolVal(first.v() > second.v());
+
+                if(condition.v())
+                        return (Value) e.then_exp().accept(this, env);
+                else return (Value) e.else_exp().accept(this, env);
+        }
+	
+	public Value visit(Elt e, Env env){
+		Value.NumVal first = (Value.NumVal) e.first_exp().accept(this, env);
+                Value.NumVal second = (Value.NumVal) e.second_exp().accept(this, env);
+                Value.BoolVal condition = Value.BoolVal(first.v() <= second.v());
+
+                if(condition.v())
+                        return (Value) e.then_exp().accept(this, env);
+                else return (Value) e.else_exp().accept(this, env);
+        }
+	
+	public Value visit(Egt e, Env env){
+		Value.NumVal first = (Value.NumVal) e.first_exp().accept(this, env);
+                Value.NumVal second = (Value.NumVal) e.second_exp().accept(this, env);
+                Value.BoolVal condition = Value.BoolVal(first.v() >= second.v());
+
+                if(condition.v())
+                        return (Value) e.then_exp().accept(this, env);
+                else return (Value) e.else_exp().accept(this, env);
+        }
+	
+	public Value visit(Eq e, Env env){
+		Value.NumVal first = (Value.NumVal) e.first_exp().accept(this, env);
+                Value.NumVal second = (Value.NumVal) e.second_exp().accept(this, env);
+                Value.BoolVal condition = Value.BoolVal(first.v() == second.v());
+
+                if(condition.v())
+                        return (Value) e.then_exp().accept(this, env);
+                else return (Value) e.else_exp().accept(this, env);
+        }
+
+
+	public Value visit(Give e, Env env) {
 		Value exp = e.exp().accept(this, env);
 		System.out.println(exp);
 		return exp;
 	}
 
-	public Value visit(GainExp e, Env env) {
+	public Value visit(Gain e, Env env) {
 		String name = e.name();
 		List<Exp> value_exps = e.value_exps();
 		Value value = (Value) value_exp.accept(this, env);
@@ -117,16 +173,7 @@ public class Evaluator implements AST.Visitor<Value> {
 		return new Value.UnitVal();
 	}
 
-	public Value visit(ReadExp e, Env env) {
-		StringVal fileName = (StringVal) e.file().accept(this, env);
-		try {
-			String text = Reader.readFile("" + System.getProperty("user.dir") + File.separator + fileName.v());
-			return new StringVal(text);
-		} catch (IOException ex) {
-			return new DynamicError(ex.getMessage());
-		}
-	}
-
+	
 	/*The following is last*/
 	private Env initialEnv() {
 		GlobalEnv initEnv = new GlobalEnv();
@@ -148,11 +195,6 @@ public class Evaluator implements AST.Visitor<Value> {
 		/* Add new built-in procedures here */ 
 		
 		return initEnv;
-	}
-
-	Reader _reader; 
-	public Evaluator(Reader reader) {
-		_reader = reader;
 	}
 
 }
